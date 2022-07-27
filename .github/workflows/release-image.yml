@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fact4.0
     release:
       types: [published]
 
