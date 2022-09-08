@@ -1,0 +1,19 @@
+ARG FACT_DOCKER_VERSION
+FROM fact-core-common:${FACT_DOCKER_VERSION}
+USER fact:fact
+
+# TODO remove logs
+RUN FACT_INSTALLER_SKIP_DOCKER=y /opt/FACT_core/src/install.py --frontend --no-common && \
+    sudo apt clean
+RUN FACT_INSTALLER_SKIP_DOCKER=y /opt/FACT_core/src/install.py --backend --no-common && \
+    sudo apt clean
+
+USER root:root
+RUN rm /etc/sudoers.d/99_fact
+# Move the installation to avoid confusion
+RUN mv /opt/FACT_core /opt/FACT_core-from-container
+
+USER fact:fact
+
+COPY copy-artifacts.sh /
+ENTRYPOINT ["/bin/bash"]
